@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener{
 	
@@ -24,7 +25,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    
+        
     	playerCnt = (RadioGroup)findViewById(R.id.playerCnt);
     	playerCnt.setOnCheckedChangeListener(this);
     	aiCnt = (RadioGroup)findViewById(R.id.aiCnt);
@@ -40,14 +41,18 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				
-				//화면 전환
-				Intent intent = new Intent(MainActivity.this,InGameActivity.class);
-				
-				intent.putExtra("playerCnt", n_player); //플레이어 수 전달			
-				intent.putExtra("aiCnt", n_ai); //ai수 전달
-				intent.putExtra("levelCnt", n_deck); //레벨 값 전달
-				startActivity(intent);
-				finish();
+				 if(n_player + n_ai > 6)
+		               Toast.makeText(getApplicationContext(), "참가자는 6인을 초과할 수 없습니다", Toast.LENGTH_LONG).show();
+				 else{
+					//화면 전환
+					Intent intent = new Intent(MainActivity.this,InGameActivity.class);
+					
+					intent.putExtra("playerCnt", n_player); //플레이어 수 전달			
+					intent.putExtra("aiCnt", n_ai); //ai수 전달
+					intent.putExtra("levelCnt", n_deck); //레벨 값 전달
+					startActivity(intent);
+					finish();
+				}
 			}
         });
     }

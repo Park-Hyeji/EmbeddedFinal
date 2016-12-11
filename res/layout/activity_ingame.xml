@@ -139,17 +139,66 @@
         <LinearLayout
             android:layout_width="match_parent"
         	android:layout_height="wrap_content"
-        	android:orientation="vertical" >
+        	android:orientation="horizontal" >
 
-	        <ListView
-	            android:id="@+id/playerEx"
-	            android:layout_width="70dp"
-	            android:layout_height="80dp"
-	            android:background="#fef200"
-	            android:layout_marginLeft="100dp"
-	            android:layout_marginTop="30dp"
-	            android:layout_marginBottom="5dp">
-	        </ListView>
+            <ListView
+                android:id="@+id/player1"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="5dp"
+                android:background="#fef200" >
+            </ListView>
+             <ListView
+                android:id="@+id/player2"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="5dp"
+                android:background="#fef200" >
+            </ListView>
+            <ListView
+                android:id="@+id/player3"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:background="#fef200" >
+            </ListView>
+            <ListView
+                android:id="@+id/player4"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="5dp"
+                android:background="#fef200" >
+            </ListView>
+            <ListView
+                android:id="@+id/player5"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="5dp"
+                android:background="#fef200" >
+            </ListView>
+            <ListView
+                android:id="@+id/player6"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:background="#fef200" >
+            </ListView>
 
         </LinearLayout>
     </LinearLayout>
