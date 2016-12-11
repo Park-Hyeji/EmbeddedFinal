@@ -66,6 +66,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
     		n_player = 3;       
        
     	if(aiCnt.getCheckedRadioButtonId() == R.id.oneAI)
+    		n_ai = 1;
+    	if(aiCnt.getCheckedRadioButtonId() == R.id.twoAI)
     		n_ai = 2;
     	if(aiCnt.getCheckedRadioButtonId() == R.id.threeAI)   
     		n_ai = 3;    

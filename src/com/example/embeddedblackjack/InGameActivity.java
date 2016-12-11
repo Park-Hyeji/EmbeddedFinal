@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +38,7 @@ public class InGameActivity extends Activity {
 	
 	//말할 수 없는 비밀 OST 배틀2 =  내 턴 or 게임 초기 화면 (파#,도#솔#,레#)
 	int music5[] = {5,52,65,5,52,65,5,52,19,5,52,65,5,52,19,65,
-	6,65,20,6,65,19,6,65,66,6,65,19,6,65,66,65,
+	6,65,67,6,65,19,6,65,66,6,65,19,6,65,66,65,
 	17,65,22,17,65,68,17,65,67,17,65,19,17,65,66,19,
 	65,0,81,0,0,0};
 	int duration5[] = {16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
@@ -80,6 +81,20 @@ public class InGameActivity extends Activity {
         int aiCnt = intent.getIntExtra("aiCnt",0);
         int levelCnt = intent.getIntExtra("levelCnt",0);
         
+        int total_player = 0;
+        total_player = playerCnt + aiCnt;
+        ListView spot1 = (ListView)findViewById(R.id.player1);
+        ListView spot2 = (ListView)findViewById(R.id.player2);
+        ListView spot3 = (ListView)findViewById(R.id.player3);
+        ListView spot4 = (ListView)findViewById(R.id.player4);
+        ListView spot5 = (ListView)findViewById(R.id.player5);
+        ListView spot6 = (ListView)findViewById(R.id.player6);
+
+        if(total_player < 6){spot6.setVisibility(View.GONE);}
+        if(total_player < 5){spot5.setVisibility(View.GONE);}
+        if(total_player < 4){spot4.setVisibility(View.GONE);}
+        if(total_player < 3){spot3.setVisibility(View.GONE);}
+        
         if(playerCnt == 1){
         	
         }else if(playerCnt == 2){
@@ -105,6 +120,8 @@ public class InGameActivity extends Activity {
         }else if(levelCnt == 6){
         	deckNum.setText("6 DECK");
         }
+        
+        
         
         //임시 노래
         hitBtn.setOnClickListener(new Button.OnClickListener(){
