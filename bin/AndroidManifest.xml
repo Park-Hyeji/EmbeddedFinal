@@ -3,6 +3,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>  
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
@@ -20,9 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--  여기서부터 추가	-->
         <activity 
             android:name=".InGameActivity" 
             android:screenOrientation="landscape" >
+        </activity>
+        <activity android:name=".DeviceListActivity" 
+                android:theme="@android:style/Theme.DeviceDefault.Dialog"
+                android:screenOrientation="landscape">
+        </activity>
+        <activity android:name=".BluetoothService" 
+                android:screenOrientation="landscape">
         </activity>
     </application>
 </manifest>

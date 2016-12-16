@@ -16,10 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class InGameActivity extends Activity {
-	int cards[][] = new int[4][14];
 	ArrayAdapter<String> adapter1;
-	ArrayList<String> Card1;
-	boolean gameStartReady = false;
+	
 	//Piezo
 	PiezoThread piezo = new PiezoThread();
 	int PiezoData;
@@ -70,15 +68,18 @@ public class InGameActivity extends Activity {
         setContentView(R.layout.activity_ingame);
         System.loadLibrary("blackjack");
         
+        //TextView
     	final TextView deckNum = (TextView)findViewById(R.id.deckNum);
+    	final TextView total_money = (TextView)findViewById(R.id.cashNum);
+    	final TextView bet_money = (TextView)findViewById(R.id.betNum);
+    	
+    	//Button
     	final Button hitBtn = (Button)findViewById(R.id.hit);
     	final Button stayBtn = (Button)findViewById(R.id.Stay);
     	final Button splitBtn = (Button)findViewById(R.id.Split);
     	final Button doubleBtn = (Button)findViewById(R.id.Double);
     	final Button insuranceBtn = (Button)findViewById(R.id.Insurance);
     	final Button evenmoneyBtn = (Button)findViewById(R.id.Even_money);
-    	final TextView cashNum = (TextView)findViewById(R.id.cashNum);
-    	final TextView betNum = (TextView)findViewById(R.id.betNum);
     	final Button chip_1 = (Button)findViewById(R.id.chip_1);
     	final Button chip_5 = (Button)findViewById(R.id.chip_5);
     	final Button chip_20 = (Button)findViewById(R.id.chip_20);
@@ -86,9 +87,13 @@ public class InGameActivity extends Activity {
     	final Button chip_500 = (Button)findViewById(R.id.chip_500);
     	final Button gameStartBtn = (Button)findViewById(R.id.gameStartBtn);
     	
-		for(int i=0; i<4; i++)
-		    for(int j=0; j<13; j++)
-		    	cards[i][j] = 0;
+    	//게임 버튼 처음엔 enable, 게임 시작해야 눌리게 함
+    	hitBtn.setEnabled(false);
+    	stayBtn.setEnabled(false);
+    	splitBtn.setEnabled(false);
+    	doubleBtn.setEnabled(false);
+    	insuranceBtn.setEnabled(false);
+    	evenmoneyBtn.setEnabled(false);
     	 
     	//Piezo
     	piezo.setDaemon(true);
@@ -106,11 +111,6 @@ public class InGameActivity extends Activity {
         
         int total_player = 0;
         total_player = playerCnt + aiCnt;
-        //본인
-        Card1 = new ArrayList<String>();
-        adapter1 = new ArrayAdapter<String>(this,R.layout.simpleitem,Card1);
-        ListView spot1 = (ListView)findViewById(R.id.player1);
-        spot1.setAdapter(adapter1);
         
         ListView spot2 = (ListView)findViewById(R.id.player2);
         ListView spot3 = (ListView)findViewById(R.id.player3);
@@ -150,160 +150,170 @@ public class InGameActivity extends Activity {
         	deckNum.setText("6 DECK");
         }
         
-        final TextView total_money = (TextView)findViewById(R.id.cashNum);
-        final TextView bet_money = (TextView)findViewById(R.id.betNum);
-        bet_money.setText(Integer.toString(Bet));
-        total_money.setText(Integer.toString(Total_cash));
+        final Player p1 = new Player();
+    	final Player p2 = new Player();
+    	final Deck deck = new Deck(levelCnt);
+    	final Dealer dealer = new Dealer();
+    	
+    	//배팅 부분
+     	total_money.setText(Integer.toString(p1.total));
+     	bet_money.setText(Integer.toString(p1.bet));
+     	
+     	chip_1.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View arg0) {
+        		if(Bet + 1 <= Total_cash)
+        		{   Bet = Bet + 1;
+        			bet_money.setText(Integer.toString(Bet));
+        		}
+        		else
+        			Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
+		     	}
+		 });
         
-        Button Bet_1 = (Button)findViewById(R.id.chip_1);
-        Bet_1.setOnClickListener(new View.OnClickListener() {
-	         public void onClick(View arg0) {
-	            if(Bet + 1 <= Total_cash)
-	            {   Bet = Bet + 1;
-	               bet_money.setText(Integer.toString(Bet));
-	            }
-	            else
-	               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
-	         }
-	      });
-	        
-	        Button Bet_5 = (Button)findViewById(R.id.chip_5);
-	        Bet_5.setOnClickListener(new View.OnClickListener() {
-	         public void onClick(View arg0) {
-	            if(Bet + 5 <= Total_cash)
-	            {   Bet = Bet + 5;
-	               bet_money.setText(Integer.toString(Bet));
-	            }
-	            else
-	               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
-	         }
-	      });
-	        
-	        Button Bet_20 = (Button)findViewById(R.id.chip_20);
-	        Bet_20.setOnClickListener(new View.OnClickListener() {
-	         public void onClick(View arg0) {
-	            if(Bet + 20 <= Total_cash)
-	            {   Bet = Bet + 20;
-	               bet_money.setText(Integer.toString(Bet));
-	            }
-	            else
-	               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
-	         }
-	      });
-	
-	        Button Bet_100 = (Button)findViewById(R.id.chip_100);
-	        Bet_100.setOnClickListener(new View.OnClickListener() {
-	         public void onClick(View arg0) {
-	            if(Bet + 100 <= Total_cash)
-	            {   Bet = Bet + 100;
-	               bet_money.setText(Integer.toString(Bet));
-	            }
-	            else
-	               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
-	         }
-	      });
-	        
-	        Button Bet_500 = (Button)findViewById(R.id.chip_500);
-	        Bet_500.setOnClickListener(new View.OnClickListener() {
-	         public void onClick(View arg0) {
-	            if(Bet + 500 <= Total_cash)
-	            {   Bet = Bet + 500;
-	               bet_money.setText(Integer.toString(Bet));
-	            }
-	            else
-	               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
-	         }
-	      });
+     	chip_5.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View arg0) {
+        		if(Bet + 5 <= Total_cash)
+		        {   Bet = Bet + 5;
+		           bet_money.setText(Integer.toString(Bet));
+		        }
+		        else
+		           Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
+        	}
+        });
+     	
+     	chip_20.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View arg0) {
+            if(Bet + 20 <= Total_cash)
+            {   Bet = Bet + 20;
+               bet_money.setText(Integer.toString(Bet));
+            }
+            else
+               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
+         }
+        });
+     	
+     	chip_100.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View arg0) {
+            if(Bet + 100 <= Total_cash)
+            {   Bet = Bet + 100;
+               bet_money.setText(Integer.toString(Bet));
+            }
+            else
+               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
+         }
+        });
+
+     	chip_500.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View arg0) {
+            if(Bet + 500 <= Total_cash)
+            {   Bet = Bet + 500;
+               bet_money.setText(Integer.toString(Bet));
+            }
+            else
+               Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
+         }
+        });
+     	
+     	adapter1 = new ArrayAdapter<String>(this,R.layout.simpleitem, p1.Card);
+        ListView spot1 = (ListView)findViewById(R.id.player1);
+        spot1.setAdapter(adapter1);
+     	
         //게임 시작!!
         gameStartBtn.setOnClickListener(new Button.OnClickListener(){
 
 			public void onClick(View arg0) {
+
 				// TODO Auto-generated method stub
-				gameStartReady = true;
+				if(p1.bet != 0){
+					Toast.makeText(getApplicationContext(), "게임이 시작됩니다.", Toast.LENGTH_LONG).show();
+					chip_1.setEnabled(false);
+					chip_5.setEnabled(false);
+					chip_20.setEnabled(false);
+					chip_100.setEnabled(false);
+					chip_500.setEnabled(false);
+					gameStartBtn.setEnabled(false);
+					
+					hitBtn.setEnabled(true);
+			    	stayBtn.setEnabled(true);
+			    	splitBtn.setEnabled(true);
+			    	doubleBtn.setEnabled(true);
+			    	insuranceBtn.setEnabled(true);
+			    	evenmoneyBtn.setEnabled(true);
+			    	
+			    	deck.Shuffle();
+			    	
+			    	p1.Hit(deck.distribute_card());
+			    	adapter1.notifyDataSetChanged();
+			    	dealer.recieve(deck.distribute_card());
+			    	
+			    	p1.Hit(deck.distribute_card());
+			    	adapter1.notifyDataSetChanged();
+			    	dealer.recieve(deck.distribute_card());
+			    }
+				else{
+					Toast.makeText(getApplicationContext(), "배팅을 해야 게임이 가능합니다.", Toast.LENGTH_LONG).show();
+				}
 			}
 		});
-        if(gameStartReady == true){
-            //임시 노래
-            hitBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				String Card = recieve_card(levelCnt);
-    		        Card1.add(0,Card);
-    		        adapter1.notifyDataSetChanged();
-    				index = 0;
-    				musicOne = 0;
-    				music = 1;
-    			}
-    		});
-            stayBtn.setOnClickListener(new Button.OnClickListener(){
+        //임시 노래
+        hitBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				index = 0;
-    				musicOne = 0;
-    				music = 2;
-    			}     	
-            });
-            splitBtn.setOnClickListener(new Button.OnClickListener(){
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				p1.Hit(deck.distribute_card());
+				adapter1.notifyDataSetChanged();
+				index = 0;
+				musicOne = 0;
+				music = 1;
+			}
+		});
+        stayBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				index = 0;
-    				musicOne = 0;
-    				music = 3;
-    			}
-            });
-            doubleBtn.setOnClickListener(new Button.OnClickListener(){
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				index = 0;
+				musicOne = 0;
+				music = 2;
+			}     	
+        });
+        splitBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				index = 0;
-    				musicOne = 0;
-    				music = 4;
-    			}
-            });
-            insuranceBtn.setOnClickListener(new Button.OnClickListener(){
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				index = 0;
+				musicOne = 0;
+				music = 3;
+			}
+        });
+        doubleBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				index = 0;
-    				musicOne = 0;
-    				music = 5;
-    			}      	
-            });
-            evenmoneyBtn.setOnClickListener(new Button.OnClickListener(){
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				index = 0;
+				musicOne = 0;
+				music = 4;
+			}
+        });
+        insuranceBtn.setOnClickListener(new Button.OnClickListener(){
 
-    			public void onClick(View arg0) {
-    				// TODO Auto-generated method stub
-    				index = 0;
-    				musicOne = 0;
-    				music = 6;
-    			}    	
-            }); 
-        }     
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				index = 0;
+				musicOne = 0;
+				music = 5;
+			}      	
+        });
+        evenmoneyBtn.setOnClickListener(new Button.OnClickListener(){
+
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				index = 0;
+				musicOne = 0;
+				music = 6;
+			}    	
+        });    
     }
-    
-    //카드 배분
-    String recieve_card(int n_deck){
-        String shape[] ={"S","D","H","C"};
-        String Value[] = {"1", "2","3","4","5","6","7","8","9","10","J","Q","K","A"};
-        String Card;
-        int pick_shape;
-        int pick_Value;
-        while(true)
-        {
-           pick_shape = (int)(Math.random()*4);
-           pick_Value = (int)(Math.random()*14);
-           if(cards[pick_shape][pick_Value] < n_deck )
-           {
-              cards[pick_shape][pick_Value]++;
-              break;
-           }
-        }
-        Card = shape[pick_shape] + Value[pick_Value];
-       return Card;
-     }
     
     class PiezoThread extends Thread{
     	public void run(){

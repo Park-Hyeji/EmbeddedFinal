@@ -1,18 +1,44 @@
 package com.example.embeddedblackjack;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener{
 	
+	// Debugging
+	private static final String TAG = "Main";
+	// Intent request code
+	private static final int REQUEST_CONNECT_DEVICE = 1;
+	private static final int REQUEST_ENABLE_BT = 2;
+	
+	// Layout
+	private Button btn_Connect;
+	private TextView txt_Result;
+	
+	private BluetoothService btService = null;
+	private final Handler mHandler = new Handler() {
+	
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+		}
+		
+	};
+	
+	//게임
 	int n_player = 1;
 	int n_ai = 1;
 	int n_deck = 1;
@@ -20,12 +46,19 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
 	RadioGroup aiCnt;
 	RadioGroup levelCnt;
 	Button gameStartBtn;
+	Button enterRoomBtn;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
+        //블루투스
+        // BluetoothService 클래스 생성
+ 		if(btService == null) {
+ 			btService = new BluetoothService(this, mHandler);
+ 		}
+     		
     	playerCnt = (RadioGroup)findViewById(R.id.playerCnt);
     	playerCnt.setOnCheckedChangeListener(this);
     	aiCnt = (RadioGroup)findViewById(R.id.aiCnt);
@@ -33,17 +66,19 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
     	levelCnt = (RadioGroup)findViewById(R.id.levelCnt);
     	levelCnt.setOnCheckedChangeListener(this);
     	gameStartBtn = (Button)findViewById(R.id.gameStartBtn);
+        enterRoomBtn = (Button)findViewById(R.id.enterRoomBtn);
         
         //게임 시작 누르면 InGame으로 바뀜
-
+        //방 생성
         gameStartBtn.setOnClickListener(new Button.OnClickListener(){
 
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				
-				 if(n_player + n_ai > 6)
-		               Toast.makeText(getApplicationContext(), "참가자는 6인을 초과할 수 없습니다", Toast.LENGTH_LONG).show();
-				 else{
+				if(n_player + n_ai > 6)
+					Toast.makeText(getApplicationContext(), "참가자는 6인을 초과할 수 없습니다", Toast.LENGTH_LONG).show();
+				else{
+					//방 생성하기
+					
 					//화면 전환
 					Intent intent = new Intent(MainActivity.this,InGameActivity.class);
 					
@@ -55,6 +90,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
 				}
 			}
         });
+        
+        //방 찾아보기
+        enterRoomBtn.setOnClickListener(new Button.OnClickListener(){
+
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if(btService.getDeviceState()) {
+					// 블루투스가 지원 가능한 기기일 때
+					btService.enableBluetooth();
+				} else {
+					finish();
+				}
+			}
+        });
+        
     }
     
     public void onCheckedChanged(RadioGroup arg0, int arg1){
@@ -83,7 +133,30 @@ public class MainActivity extends Activity implements OnCheckedChangeListener{
     	if(levelCnt.getCheckedRadioButtonId() == R.id.sixDeck)   
     		n_deck = 6;  
     }
-
+	
+   //블루투스 켜져 있나?
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {       
+	    switch (requestCode) {   
+	    case REQUEST_CONNECT_DEVICE:
+        // When DeviceListActivity returns with a device to connect
+        if (resultCode == Activity.RESULT_OK) {
+        	btService.getDeviceInfo(data);
+        }
+        break;
+	    case REQUEST_ENABLE_BT:
+	        // When the request to enable Bluetooth returns
+	        if (resultCode == Activity.RESULT_OK) {
+	            // 확인 눌렀을 때
+	            //Next Step
+	        	btService.scanDevice();
+	        } else {
+	            // 취소 눌렀을 때
+	            Log.d(TAG, "Bluetooth is not enabled");
+	        }
+	        break;
+	    }
+	}
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
