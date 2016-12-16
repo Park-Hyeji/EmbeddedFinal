@@ -62,6 +62,9 @@ public class InGameActivity extends Activity {
 	int Total_cash = 5000;
 	int Bet = 0;
 	
+	//item에서 쓸려고
+	int levelCnt;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +109,7 @@ public class InGameActivity extends Activity {
         Intent intent = getIntent();
         final int playerCnt = intent.getIntExtra("playerCnt",0);
         final int aiCnt = intent.getIntExtra("aiCnt",0);
-        final int levelCnt = intent.getIntExtra("levelCnt",0);
+        levelCnt = intent.getIntExtra("levelCnt",0); //item에서 쓸려고
        
         
         int total_player = 0;
@@ -161,9 +164,9 @@ public class InGameActivity extends Activity {
      	
      	chip_1.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View arg0) {
-        		if(Bet + 1 <= Total_cash)
-        		{   Bet = Bet + 1;
-        			bet_money.setText(Integer.toString(Bet));
+        		if(p1.bet + 1 <= p1.total)
+        		{   p1.bet = p1.bet + 1;
+        			bet_money.setText(Integer.toString(p1.bet));
         		}
         		else
         			Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
@@ -172,9 +175,9 @@ public class InGameActivity extends Activity {
         
      	chip_5.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View arg0) {
-        		if(Bet + 5 <= Total_cash)
-		        {   Bet = Bet + 5;
-		           bet_money.setText(Integer.toString(Bet));
+        		if(p1.bet + 5 <= p1.total)
+		        {   p1.bet = p1.bet + 5;
+		           bet_money.setText(Integer.toString(p1.bet));
 		        }
 		        else
 		           Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
@@ -183,9 +186,9 @@ public class InGameActivity extends Activity {
      	
      	chip_20.setOnClickListener(new View.OnClickListener() {
          public void onClick(View arg0) {
-            if(Bet + 20 <= Total_cash)
-            {   Bet = Bet + 20;
-               bet_money.setText(Integer.toString(Bet));
+            if(p1.bet + 20 <= p1.total)
+            {   p1.bet = p1.bet + 20;
+               bet_money.setText(Integer.toString(p1.bet));
             }
             else
                Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
@@ -194,9 +197,9 @@ public class InGameActivity extends Activity {
      	
      	chip_100.setOnClickListener(new View.OnClickListener() {
          public void onClick(View arg0) {
-            if(Bet + 100 <= Total_cash)
-            {   Bet = Bet + 100;
-               bet_money.setText(Integer.toString(Bet));
+            if(p1.bet + 100 <= p1.total)
+            {   p1.bet = p1.bet + 100;
+               bet_money.setText(Integer.toString(p1.bet));
             }
             else
                Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();
@@ -205,9 +208,9 @@ public class InGameActivity extends Activity {
 
      	chip_500.setOnClickListener(new View.OnClickListener() {
          public void onClick(View arg0) {
-            if(Bet + 500 <= Total_cash)
-            {   Bet = Bet + 500;
-               bet_money.setText(Integer.toString(Bet));
+            if(p1.bet + 500 <= p1.total)
+            {  p1.bet = p1.bet + 500;
+               bet_money.setText(Integer.toString(p1.bet));
             }
             else
                Toast.makeText(getApplicationContext(), "보유하신 금액을 초과하였습니다.", Toast.LENGTH_LONG).show();

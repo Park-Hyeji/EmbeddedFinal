@@ -10,6 +10,7 @@ public class Player {
 	int nth_card = 0;
 	int score = 0;
 	boolean My_turn = false;
+	boolean hasAce;
 
 	ArrayList Card = new ArrayList<String>(); //받은 카드 저장
 	ArrayList Spilted =  new ArrayList<String>(); //Spilted된 카드 저장
@@ -29,7 +30,7 @@ public class Player {
 		
 		if(score > 21)
 		{
-			boolean hasAce = false;
+			hasAce = false;
 			int AceIndex = 0;
 			for(int i=0; i < nth_card; i++)
 			{
